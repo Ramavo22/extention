@@ -3,18 +3,144 @@
 {% block title %}Mon Dashboard{% endblock %}
 
 {% block body %}
-    <h2>Bienvenue, Admin !</h2>
-    <p>Voici les statistiques récentes :</p>
-
-    <div class="row">
+    <!-- Cartes de résumé -->
+    <div class="row mb-4">
         <div class="col-md-4">
-            <div class="card mb-3">
+            <div class="card text-bg-primary mb-3 shadow-sm rounded">
                 <div class="card-body">
-                    <h5 class="card-title">Utilisateurs</h5>
-                    <p class="card-text">150 inscrits</p>
+                    <h5 class="card-title">Total ticket created</h5>
+                    <p class="card-text fs-4">{{ totalTicketYear }}</p>
+                    <a href="#" class="btn btn-light btn-sm mt-2">Voir les détails</a>
                 </div>
             </div>
         </div>
-        <!-- D'autres cartes/statistiques -->
+        <div class="col-md-4">
+            <div class="card text-bg-primary mb-3 shadow-sm rounded">
+                <div class="card-body">
+                    <h5 class="card-title">Total lead created</h5>
+                    <p class="card-text fs-4">{{ totalLeadYear }}</p>
+                    <a href="#" class="btn btn-light btn-sm mt-2">Voir les détails</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-bg-primary mb-3 shadow-sm rounded">
+                <div class="card-body">
+                    <h5 class="card-title">Total Client Created</h5>
+                    <p class="card-text fs-4">26</p>
+                    <a href="#" class="btn btn-light btn-sm mt-2">Voir les détails</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Graphiques dans des boîtes avec écart -->
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm rounded p-3">
+                <h5 class="card-title text-center mb-3">Lead's Expense</h5>
+                <canvas id="chart1"></canvas> {# Hauteur supprimée ici aussi #}
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm rounded p-3">
+                <h5 class="card-title text-center mb-3">Ticket's Expense</h5>
+                <canvas id="chart2"></canvas> {# Hauteur supprimée ici aussi #}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm rounded p-3">
+                <h5 class="card-title text-center mb-3">Clients créés</h5>
+                <canvas id="chart3"></canvas> {# Hauteur supprimée ici #}
+            </div>
+        </div>
+
     </div>
 {% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+
+        // Labels des mois dans l'ordre
+        const moisLabels = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'];
+
+        // Tes données venant du backend avec clés abrégées
+        const expenseLeadPerMonth = {{ expenseParMois|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
+
+        // Construction des données finales : valeur ou 0 si absent
+        const expenseLeadPerMonthData = moisLabels.map(label => expenseLeadPerMonth[label] || 0);
+
+        // Graphique 2 - Ligne
+        new Chart(document.getElementById('chart1'), {
+            type: 'line',
+            data: {
+                labels: moisLabels,
+                datasets: [{
+                    label: 'Expense lead Par mois',
+                    data: expenseLeadPerMonthData,
+                    fill: false,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+
+            }
+        });
+
+        const expenseTicketPerMonth = {{ ticketParMois|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
+        const expenseTicketPerMonthData = moisLabels.map(label => expenseTicketPerMonth[label] || 0);
+        // Graphique 2 - Ligne
+        new Chart(document.getElementById('chart2'), {
+            type: 'line',
+            data: {
+                labels: moisLabels,
+                datasets: [{
+                    label: 'Depense Ticket Par mois',
+                    data: expenseTicketPerMonthData,
+                    fill: false,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+
+            }
+        });
+
+        // Tes données venant du backend avec clés abrégées
+        const clientsData = {{ clientsParMois|json_encode(constant('JSON_UNESCAPED_UNICODE'))|raw }};
+
+        // Construction des données finales : valeur ou 0 si absent
+        const clientsParMoisData = moisLabels.map(label => clientsData[label] || 0);
+
+        // Création du graphique
+        new Chart(document.getElementById('chart3'), {
+            type: 'bar',
+            data: {
+                labels: moisLabels,
+                datasets: [{
+                    label: 'Clients créés',
+                    data: clientsParMoisData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+    </script>
+{% endblock %}
+
+
