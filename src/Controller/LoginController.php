@@ -17,7 +17,7 @@ final class LoginController extends AbstractController
         $this->client = $client;
     }
 
-    #[Route('/login', name: 'app_login', methods: ['GET'])]
+    #[Route('/', name: 'app_login', methods: ['GET'])]
     public function index(): Response
     {
         return $this->render('login/index.html.twig',[
@@ -26,7 +26,7 @@ final class LoginController extends AbstractController
         ]);
     }
 
-    #[Route('/login', name: 'app_login_post', methods: ['POST'])]
+    #[Route('/', name: 'app_login_post', methods: ['POST'])]
     public function traiterLogin(Request $request): Response
     {
         $username = $request->request->get('username');
@@ -39,15 +39,12 @@ final class LoginController extends AbstractController
                     'password' => $password,
                 ]
             ]);
-
             $statusCode = $response->getStatusCode();
 
             if ($statusCode === 200) {
                 $data = $response->toArray();
                 $token = $data['token']; // supposons que Spring renvoie un JWT
-                // Enregistre le token en session, cookie ou autre
                 $request->getSession()->set('jwt', $token);
-
                 return $this->redirectToRoute('admin_dashboard');
             } else {
                 $message = $response->getContent(false);
