@@ -5,30 +5,21 @@
 {% block body %}
     <!-- Cartes de résumé -->
     <div class="row mb-4">
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card text-bg-primary mb-3 shadow-sm rounded">
                 <div class="card-body">
                     <h5 class="card-title">Total ticket created</h5>
                     <p class="card-text fs-4">{{ totalTicketYear }}</p>
-                    <a href="#" class="btn btn-light btn-sm mt-2">Voir les détails</a>
+                    <a href="{{ path('app_ticket') }}" class="btn btn-light btn-sm mt-2">Voir les détails</a>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-6">
             <div class="card text-bg-primary mb-3 shadow-sm rounded">
                 <div class="card-body">
                     <h5 class="card-title">Total lead created</h5>
                     <p class="card-text fs-4">{{ totalLeadYear }}</p>
-                    <a href="#" class="btn btn-light btn-sm mt-2">Voir les détails</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-bg-primary mb-3 shadow-sm rounded">
-                <div class="card-body">
-                    <h5 class="card-title">Total Client Created</h5>
-                    <p class="card-text fs-4">26</p>
-                    <a href="#" class="btn btn-light btn-sm mt-2">Voir les détails</a>
+                    <a href="{{ path('app_lead') }}" class="btn btn-light btn-sm mt-2">Voir les détails</a>
                 </div>
             </div>
         </div>

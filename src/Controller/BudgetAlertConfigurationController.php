@@ -19,8 +19,14 @@ final class BudgetAlertConfigurationController extends AbstractController
 
 
     #[Route('budget-alert', name: 'alert_configuration')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
+       $jwt = $request->getSession()->get('jwt');
+
+       if (!$jwt) {
+          return $this->redirectToRoute('app_login');
+       }
+
         return $this->render('budget_alert_configuration/index.html.twig', [
             'controller_name' => 'BudgetAlertConfigurationController',
             'erreur' => null,
