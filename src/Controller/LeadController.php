@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-final class TicketController extends AbstractController
+final class LeadController extends AbstractController
 {
    private HttpClientInterface $client;
 
@@ -17,7 +17,7 @@ final class TicketController extends AbstractController
       $this->client = $client;
    }
 
-   #[Route('/ticket', name: 'app_ticket')]
+   #[Route('/lead', name: 'app_lead')]
    public function index(Request $request): Response
    {
       try {
@@ -27,7 +27,7 @@ final class TicketController extends AbstractController
             return $this->redirectToRoute('app_login');
          }
 
-         $response = $this->client->request('GET', 'http://crm-backend:8080/api/ticket', [
+         $response = $this->client->request('GET', 'http://crm-backend:8080/api/lead', [
              'headers' => [
                  'Authorization' => 'Bearer ' . $jwt,
                  'Accept' => 'application/json',
@@ -36,10 +36,10 @@ final class TicketController extends AbstractController
 
          if ($response->getStatusCode() === 200) {
             $data = $response->toArray();
-            $tickets = $data['data']['ticket'] ?? [];
+            $leads = $data['data']['leads'] ?? [];
 
-            return $this->render('ticket/index.html.twig', [
-                'tickets' => $tickets,
+            return $this->render('lead/index.html.twig', [
+                'leads' => $leads,
             ]);
          }
 
@@ -57,7 +57,7 @@ final class TicketController extends AbstractController
          ]);
 
       } catch (\Exception $e) {
-         // En cas d'exception (erreur de réseau, backend indisponible, etc.)
+         // Gestion des erreurs (ex: serveur indisponible)
          return $this->render('error/custom_error.html.twig', [
              'code' => 500,
              'message' => 'Erreur serveur : ' . $e->getMessage(),
@@ -65,7 +65,8 @@ final class TicketController extends AbstractController
       }
    }
 
-   #[Route('/ticket/delete/{id}', name: 'ticket_delete', methods: ['GET'])]
+
+   #[Route('/lead/delete/{id}', name: 'lead_delete', methods: ['GET'])]
    public function delete(int $id, Request $request): Response
    {
       try {
@@ -76,7 +77,7 @@ final class TicketController extends AbstractController
          }
 
          // Envoi de la requête de suppression au service Spring
-         $response = $this->client->request('GET', 'http://crm-backend:8080/api/ticket/delete/' . $id, [
+         $response = $this->client->request('GET', 'http://crm-backend:8080/api/lead/delete/' . $id, [
              'headers' => [
                  'Authorization' => 'Bearer ' . $jwt,
                  'Accept' => 'application/json',
@@ -87,10 +88,10 @@ final class TicketController extends AbstractController
          if ($response->getStatusCode() === 200) {
             // Réponse réussie, suppression réussie
             $data = $response->toArray();
-            $this->addFlash('success', 'Ticket deleted successfully.');
+            $this->addFlash('success', 'lead deleted successfully.');
 
             // Rediriger vers la page des tickets
-            return $this->redirectToRoute('app_ticket');
+            return $this->redirectToRoute('app_lead');
          }
 
          if ($response->getStatusCode() === 404) {
@@ -99,7 +100,7 @@ final class TicketController extends AbstractController
             $this->addFlash('error', $data['message']);
 
             // Rediriger vers la page des tickets
-            return $this->redirectToRoute('app_ticket');
+            return $this->redirectToRoute('app_lead');
          }
 
          if ($response->getStatusCode() === 500) {
@@ -108,24 +109,25 @@ final class TicketController extends AbstractController
             $this->addFlash('error', $data['message']);
 
             // Rediriger vers la page des tickets
-            return $this->redirectToRoute('app_ticket');
+            return $this->redirectToRoute('app_lead');
          }
 
          // Pour toute autre erreur (ex: 403, 401, etc.)
          $this->addFlash('error', 'Une erreur est survenue, veuillez réessayer.');
 
-         return $this->redirectToRoute('app_ticket');
+         return $this->redirectToRoute('app_lead');
 
       } catch (\Exception $e) {
          // Gestion des exceptions (problème réseau, service Spring inaccessible, etc.)
          $this->addFlash('error', 'Erreur serveur : ' . $e->getMessage());
 
-         return $this->redirectToRoute('app_ticket');
+         return $this->redirectToRoute('app_lead');
       }
    }
 
-   #[Route('ticket/update-expense', name: 'ticket_update_expense', methods: ['POST'])]
-   public function updateExpense(Request $request, HttpClientInterface $client): Response
+
+   #[Route('lead/update-expense', name: 'lead_update_expense', methods: ['POST'])]
+   public function updateLeadExpense(Request $request, HttpClientInterface $client): Response
    {
       try {
          // Vérifier que le JWT est présent dans la session
@@ -135,17 +137,17 @@ final class TicketController extends AbstractController
          }
 
          // Récupérer les données envoyées par le formulaire
-         $id = $request->request->get('ticketId');
+         $id = $request->request->get('leadId');
          $newExpense = $request->request->get('newExpense');
 
          // Vérifier que les données sont bien présentes
          if (!$id || !$newExpense) {
             $this->addFlash('error', 'Données invalides.');
-            return $this->redirectToRoute('ticket_list');
+            return $this->redirectToRoute('lead_list');
          }
 
          // Envoyer la requête à l'API Spring Boot
-         $response = $client->request('PUT', 'http://crm-backend:8080/api/ticket/update', [
+         $response = $client->request('PUT', 'http://crm-backend:8080/api/lead/update', [
              'headers' => [
                  'Authorization' => 'Bearer ' . $jwt,
                  'Content-Type' => 'application/json',
@@ -169,7 +171,7 @@ final class TicketController extends AbstractController
          $this->addFlash('error', 'Erreur serveur : ' . $e->getMessage());
       }
 
-      return $this->redirectToRoute('app_ticket');
+      return $this->redirectToRoute('app_lead');
    }
 
 

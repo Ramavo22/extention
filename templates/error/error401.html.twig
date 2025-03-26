@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page non trouvée (404){% endblock %}
+
+{% block body %}
+    <div class="container text-center mt-5">
+        <h1 class="display-1 text-danger">404</h1>
+        <p class="fs-4">ERREUR 401.</p>
+        <a href="{{ path('admin_dashboard') }}" class="btn btn-primary mt-3">Retour à l’accueil</a>
+    </div>
+{% endblock %}

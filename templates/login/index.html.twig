@@ -17,7 +17,7 @@
             min-height: 100vh;
         }
         .login-image {
-            background: url('{{ asset('images/login.jpg') }}') no-repeat center;
+            background: url('{{ asset('images/img.jpg') }}') no-repeat center;
             background-size: cover;
         }
         .login-form-container {
@@ -69,7 +69,7 @@
                     <img src="{{ asset('images/logo-icon.png') }}" alt="Logo" style="height:40px;">
                     elite<span style="color:#5a5bef;">admin</span>
                 </div>
-                <form method="post">
+                <form method="post" action="{{ path('app_login_post') }}">
                     <div class="form-group">
                         <label for="username">Username</label>
                         <input type="text" name="username" id="username" class="form-control" placeholder="Enter username" required>

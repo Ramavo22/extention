@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tickets{% endblock %}
+{% block title %}Leads{% endblock %}
 
 {% block body %}
     <div class="container mt-4">
@@ -12,15 +12,15 @@
             <div class="alert alert-danger">{{ message }}</div>
         {% endfor %}
 
-        <h2 class="mb-4">Liste des Tickets</h2>
+        <h2 class="mb-4">Liste des Leads</h2>
 
         <div class="table-responsive">
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-light">
                 <tr>
                     <th>#</th>
-                    <th>Subject</th>
-                    <th>Priority</th>
+                    <th>Lead</th>
+                    <th>Phone</th>
                     <th>Status</th>
                     <th>Customer</th>
                     <th>Assigned Employee</th>
@@ -29,25 +29,25 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for ticket in tickets %}
+                {% for lead in leads %}
                     <tr>
                         <td>{{ loop.index }}</td>
-                        <td>{{ ticket.subject }}</td>
-                        <td>{{ ticket.priority }}</td>
-                        <td>{{ ticket.status }}</td>
-                        <td>{{ ticket.customer }}</td>
-                        <td>{{ ticket.assingedEmployee }}</td> {# Correction ici #}
-                        <td>{{ ticket.expense }} €</td>
+                        <td>{{ lead.lead }}</td>
+                        <td>{{ lead.phone }}</td>
+                        <td>{{ lead.status }}</td>
+                        <td>{{ lead.customer }}</td>
+                        <td>{{ lead.assignedEmployee }}</td>
+                        <td>{{ lead.expense }} €</td>
                         <td>
-                            <a href="{{ path('ticket_delete', { id: ticket.id }) }}" class="btn btn-danger">Supprimer</a>
-                            <button class="btn btn-warning" onclick="openEditModal({{ ticket.id }}, '{{ ticket.expense }}')">
+                            <a href="{{ path('lead_delete', { id: lead.id }) }}" class="btn btn-danger">Supprimer</a>
+                            <button class="btn btn-warning" onclick="openEditModal({{ lead.id }}, '{{ lead.expense }}')">
                                 Modifier
                             </button>
                         </td>
                     </tr>
                 {% else %}
                     <tr>
-                        <td colspan="8" class="text-center">Aucun ticket disponible.</td>
+                        <td colspan="8" class="text-center">Aucun lead disponible.</td>
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -64,8 +64,8 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                     <form id="editExpenseForm" action="{{ path('ticket_update_expense') }}" method="post">
-                        <input type="hidden" id="ticketId" name="ticketId">
+                    <form id="editExpenseForm" action="{{ path('lead_update_expense') }}" method="post">
+                        <input type="hidden" id="leadId" name="leadId">
                         <div class="mb-3">
                             <label for="newExpense" class="form-label">Nouvelle Dépense (€)</label>
                             <input type="number" class="form-control" id="newExpense" name="newExpense" required>
@@ -79,8 +79,8 @@
 
     <!-- Script pour gérer le pop-up et la requête AJAX -->
     <script>
-        function openEditModal(ticketId, currentExpense) {
-            document.getElementById("ticketId").value = ticketId;
+        function openEditModal(leadId, currentExpense) {
+            document.getElementById("leadId").value = leadId;
             document.getElementById("newExpense").value = currentExpense;
             let modal = new bootstrap.Modal(document.getElementById('editExpenseModal'));
             modal.show();

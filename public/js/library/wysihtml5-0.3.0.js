@@ -3562,7 +3562,7 @@ wysihtml5.browser = (function() {
         "insertOrderedList":    isIE || isOpera || isWebKit
       };
       
-      // Firefox throws errors for queryCommandSupported, so we have to build up our own object of supported commands
+      // Firefox throws error for queryCommandSupported, so we have to build up our own object of supported commands
       var supported = {
         "insertHTML": isGecko
       };
@@ -3570,7 +3570,7 @@ wysihtml5.browser = (function() {
       return function(doc, command) {
         var isBuggy = buggyCommands[command];
         if (!isBuggy) {
-          // Firefox throws errors when invoking queryCommandSupported or queryCommandEnabled
+          // Firefox throws error when invoking queryCommandSupported or queryCommandEnabled
           try {
             return doc.queryCommandSupported(command);
           } catch(e1) {}
@@ -5460,7 +5460,7 @@ wysihtml5.dom.replaceWithChildNodes = function(node) {
       this.getWindow = function() { return iframe.contentWindow; };
       this.getDocument = function() { return iframe.contentWindow.document; };
 
-      // Catch js errors and pass them to the parent's onerror event
+      // Catch js error and pass them to the parent's onerror event
       // addEventListener("error") doesn't work properly in some browsers
       // TODO: apparently this doesn't work in IE9!
       iframeWindow.onerror = function(errorMessage, fileName, lineNumber) {
